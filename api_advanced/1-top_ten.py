@@ -12,33 +12,28 @@ def top_ten(subreddit):
         print("None")
         return
 
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
     headers = {"User-Agent": "RedditTopTenPostsFetcher/1.0"}
-    params = {"limit": 10}
 
     try:
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            allow_redirects=False
-        )
+        response = requests.get(url, headers=headers, allow_redirects=False)
 
         if response.status_code != 200:
             print("None")
             return
 
         data = response.json()
-        posts = data.get("data", {}).get("children", [])
+        children = data.get("data", {}).get("children", [])
 
-        if not posts:
+        if not children:
             print("None")
             return
 
-        for post in posts:
-            post_data = post.get("data", {})
-            title = post_data.get("title", "")
-            print(title)
+        for child in children:
+            title = child.get("data", {}).get("title")
+            if title:
+                print(title)
 
     except Exception:
         print("None")
+
